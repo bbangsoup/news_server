@@ -2,8 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{layout :: head('Administrator')}">
 </head>
-<body>
-    <div class="container my-5">
+<body th:replace="~{layout :: base(~{::section})}">
+    <section>
         <div>
             <h2>카테고리 목록</h2>
         </div>
@@ -29,10 +29,12 @@
                 <input type="submit" class="btn bnt-primary" value="저장">
             </form>
         </div>
-        <!-- GET방식  https://www.google.com/search?query=아이유 -->
-        <!-- POST방식 https://www.google.com/search -->
+    </section>
 
-    </div>
+
+    <!-- GET방식  https://www.google.com/search?query=아이유 -->
+    <!-- POST방식 https://www.google.com/search -->
+
     <div th:replace="~{layout :: bootstrap_script}"></div>
 </body>
 </html>
