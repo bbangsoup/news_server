@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Administrator')}">
+</head>
+<body>
+    <div class="container my-5">
+        <div>
+            <h2>카테고리 목록</h2>
+        </div>
+        <table class ="table table-striped table-hover">
+            <thead class ="table-dark">
+                <tr>
+                    <th scope="col">카테고리명</th>
+                    <th scope="col">메모</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="cate : ${category}">
+                    <td th:text="${cate.name}"></td>
+                    <td th:text="${cate.momo}"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div>
+            <form th:action="@{/admin/inputCategory}" method="post" class="d-flex align-center gap-2">
+                <label for="category_input" class="me-2">카테고리 입력</label>
+                <input class="form-control w-auto" type="text" id="category_input" name="category_name">
+                <input type="submit" class="btn bnt-primary" value="저장">
+            </form>
+        </div>
+        <!-- GET방식  https://www.google.com/search?query=아이유 -->
+        <!-- POST방식 https://www.google.com/search -->
+
+    </div>
+    <div th:replace="~{layout :: bootstrap_script}"></div>
+</body>
+</html>

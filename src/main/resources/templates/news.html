@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('News Service')}">
+</head>
+<body>
+    <div class="container my-5">
+        <h1>NEWS HOME</h1>
+        <div>
+            <a class="btn btn-primary" th:href="@{/admin/category}">관리자 페이지</a>
+        </div>
+        <div th:if="${news != null} ">
+            <!-- 반복문 -->
+            <div th:each="article : ${news.articles}">
+                <div class="article-card">
+                    <h2 th:text="${article.title}"></h2>
+                    <p th:text="${article.description}"></p>
+                    <img src="${article.urlToImage}"></img>
+                    <a th:href="${article.url}" target="_blank">기사 보러가기</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{layout :: bootstrap_script}"></div>
+</body>
+</html>

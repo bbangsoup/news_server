@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head(홈페이지)}">
+</head>
+<body>
+    <h1>Hello Spring Boot!</h1>
+    <h2 th:if="${error}" th:text="|${error}|"></h2>
+    <h2 th:unless="${error}" th:text="|${userid}(${age})님, 반갑습니다|">.</h2>
+    <h2 th:text="${page} ? |${page} 페이지 입니다.| : ''">.</h2>
+    <a class="btn btn-primary" href="/"> 관리자 페이지 </a>
+    <div th:replace="~{layout :: bootstrap_script}"></div>
+</body>
+</html>
