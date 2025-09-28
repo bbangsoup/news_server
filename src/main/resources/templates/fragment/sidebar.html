@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <nav th:fragment="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse"
+         style="min-height: 100vh;">
+
+        <div class="position-sticky pt-3">
+            <ul class ="nav flex-column">
+                <li>
+                    <a href="#" class="nav-link">
+                        <i class="bi bi-tags"></i> 대시보드
+                    </a>
+                </li>
+
+                <li>
+                    <a th:href="@{/admin/article}" class="nav-link">
+                        <i class="bi bi-tags"></i> 뉴스 기사 관리
+                    </a>
+                </li>
+
+                <li>
+                    <a th:href="@{/admin/source}" class="nav-link">
+                        <i class="bi bi-tags"></i> 발행처 관리
+                    </a>
+                </li>
+
+                <li>
+                    <a th:href="@{/admin/category}" class="nav-link">
+                        <i class="bi bi-tags"></i> 카테고리 관리
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+
+    </nav>
+
+</body>
+</html>

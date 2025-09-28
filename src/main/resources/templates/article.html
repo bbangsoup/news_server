@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Administrator')}">
+</head>
+<body th:replace="~{layout :: base(~{::section})}">
+<section>
+    <div>
+        <h2>뉴스 기사 관리</h2>
+        <span class="text-muted fs-5">
+            / 전체 기사 개수: <span th:text="${articleCount}"></span> 개
+        </span>
+
+    </div>
+
+    <hr>
+
+    <!--  에러메세지   -->
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}>"></div>
+
+    <div>
+        <form th:action="@{/admin/inputArticles}" method="post" class="d-flex align-items-center gap-2">
+            <label for="categorySelect" class="form-label mb-0 me-2">최신</label>
+            <select id="categorySelect" name="categoryName" class="form-select w-auto">
+                <option th:each="cat, iterStat : ${categories}"
+                        th:value="${cat.name}"
+                        th:text="${cat.name}"
+                        th:selected="${iterStat.index == 0}">
+                </option>
+            </select>
+            <span class="me-2">카테고리 기사들을</span>
+            <input type="submit" class="btn btn-outline-primary" value="일괄 입력하기">
+        </form>
+    </div>
+
+    <hr>
+
+    <div class="fs-5 border bg-dark-subtle rounded text-dark p-1 mb-1" style="width:100%;">카테고리별 기사수</div>
+    <div class="row g-3 align-items-stretch">
+        <div class="col-12 col-md-6">
+            <div class="h-100 p-3 text-bg-light border border-secondary rounded" style="--bs-border-opacity: .2;">
+                <table class ="table table-striped table-hover" id="categoryTable">
+                    <thead class ="table-dark">
+                    <tr>
+                        <th scope="col">카테고리명</th>
+                        <th scope="col">기사수</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="count : ${countsByCategory}">
+                        <td th:text="${count.category}"></td>
+                        <td th:text="${count.count}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+            <div class="h-100 d-flex justify-content-center align-items-center text-bg-light border border-secondary rounded" style="--bs-border-opacity: .2;">
+                <canvas id="categoryChart" style="max-width:460px; max-height:300px;"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <!--  chart module  -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!--  chart plug-in module  -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+    <script>
+        document.addEventListener(
+            "DOMContentLoaded", () => {
+                const table = document.getElementById("categoryTable");
+                const labels = [];  // category name
+                const data = [];    // count data
+
+                // pie 차트를 그릴 데이터를 준비
+                table.querySelectorAll("tbody tr").forEach(row => {
+                    const category = row.cells[0].innerText.trim();
+                    const count = parseInt(row.cells[1].innerText.trim(), 10);
+                    labels.push(category);
+                    data.push(count);
+                });
+
+                const ctx = document.getElementById("categoryChart").getContext("2d");
+
+                new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: data,
+                            backgroundColor: [
+                                '#ff6384', '#36a2eb', '#ffcd56', '#4bc0c0', '#9966ff',
+                                '#ff9f40', '#8bc34a', '#e91e63', '#00bcd4', '#9c27b0'
+                        ],
+                            borderColor: '#fff',
+                            borderWidth: 1
+                        }]
+                    },
+                    options:{
+                        layout: { padding: 30 },
+                        plugins: {
+                            legend: { display: false },
+                            datalabels: {
+                                color: '#000',
+                                formatter: (value, ctx) =>  {
+                                    const label = ctx.chart.data.labels[ctx.dataIndex];
+                                    return `${label}(${value})`;
+                                },
+                                anchor: 'end',
+                                align: 'end',
+                                offset: 10
+                            }
+                        }
+                    },
+                    plugins: [ChartDataLabels]
+                });
+            }
+        );
+    </script>
+
+</section>
+</body>
+</html>
