@@ -62,6 +62,16 @@ public class AdminController {
         return "redirect:/admin/category";
     }
 
+    @PostMapping("/updateCategory")
+    public String updateCategory(@RequestParam("Category_Id")String categoryId,
+                                 @RequestParam("Category_Name")String categoryName,
+                                 @RequestParam("Category_Memo")String categoryMemo,
+                                 Model model) {
+        newsService.updateCategory(categoryName, categoryMemo);
+
+        return "redirect:/admin/category";
+    }
+
     @GetMapping("/source")
     public String getSources(Model model){
         List<SourceDTO> sources = newsService.getSources();
