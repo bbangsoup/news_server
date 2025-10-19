@@ -6,26 +6,64 @@
     <section>
         <div>
             <h2>카테고리 목록</h2>
+            <div class="alert alert-danger" th:if="${error}">
+                <p th:text="${error}"></p>
+            </div>
         </div>
         <table class ="table table-striped table-hover">
+            <colgroup>
+                <col style="width:15%"> <!-- 2 -->
+                <col style="width:35%"> <!-- 4 -->
+                <col style="width:35%"> <!-- 4 -->
+                <col style="width:15%"> <!-- 2 -->
+            </colgroup>
             <thead class ="table-dark">
                 <tr>
+                    <th scope="col">ID</th>
                     <th scope="col">카테고리명</th>
                     <th scope="col">메모</th>
                     <th scope="col">기능</th>
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="cate : ${category}">
-                    <td th:text="${cate.name}"></td>
-                    <td th:text="${cate.momo}"></td>
+                <tr th:each="cate, iterStat : ${category}" th:attr="data-id=${cate.id}">
+                    <td th:text="${iterStat.index+1}"></td>
                     <td>
-                        <button class ="btn btn-outline-success">
+                        <span th:text="${cate.name}"></span>
+                        <input type="text" class="form-control d-none"
+                                th:id="'name-' +${cate.id}"
+                                th:value="${cate.name}" name="name">
+                    </td>
+                    <td>
+                        <span th:text="${cate.memo}"></span>
+                        <input type="text" class="form-control d-none"
+                               th:id="'memo-' +${cate.id}"
+                               th:value="${cate.memo}" name="memo">
+                    </td>
+                    <td>
+                        <!-- 수정버튼 -->
+                        <button class ="btn btn-outline-success btn-edit">
                             <i class="bi bi-pencil"></i>
                         </button>
-                        <button class ="btn btn-outline-danger">
-                            <i class="bi bi-shield-x"></i>
-                        </button>
+
+                        <!-- 수정 완료 UI -->
+                        <form th:action="@{'/admin/updateCategory/' + ${cate.id}}"
+                            method="post" class="d-inline d-none update-form">
+                            <input type="hidden" name="name">
+                            <input type="hidden" name="memo">
+                            <button type="submit" class ="btn btn-outline-primary btn-save">
+                                <i class="bi bi-check2"></i>
+                            </button>
+                        </form>
+
+                        <!-- 삭제 UI -->
+                        <form th:action="@{'/admin/deleteCategory/' + ${cate.id}}"
+                              method="post" class="d-inline" onsubmit="return confirm('삭제하시겠습니까?');">
+                            <button type="submit" class ="btn btn-outline-danger">
+                                <i class="bi bi-shield-x"></i>
+                            </button>
+                        </form>
+
 
                     </td>
 

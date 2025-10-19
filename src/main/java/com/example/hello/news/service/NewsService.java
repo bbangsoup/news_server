@@ -10,8 +10,11 @@ import com.google.gson.Gson;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 import java.io.IOException;
 import java.net.URI;
@@ -78,8 +81,9 @@ public class NewsService {
 
         for(Category category : categories){
             CategoryDTO dto = new CategoryDTO();
+            dto.setId(category.getId().toString());
             dto.setName(category.getName());
-            dto.setMomo(category.getMemo());
+            dto.setMemo(category.getMemo());
             categoryDTOList.add( dto ) ;
         }
 
@@ -152,10 +156,10 @@ public class NewsService {
         }
     }
 
-    public List<SourceDTO> getSources() {
+    public Page<SourceDTO> getSources(Pageable pageable) {
         // 데이터베이스로부터 Source Entity 리스트를 가져와서
         // 모든 Source Entity 인스턴스를 SourceDTO 인스턴스로 변환하여 반환한다.
-        List<Source> sources = sourceRepository.findAll();
+        Page<Source> sources = sourceRepository.findAll(pageable);
 
         // for(Source source : sources){}
 
@@ -165,12 +169,30 @@ public class NewsService {
         
         // .map( source -> {Source.toDTO(source)} )
 
-        return sources.stream().map(Source::toDTO).toList();
+        return sources.map(Source::toDTO);
 
     }
 
+    @Transactional
+    public void updateCategory(String categoryId, String categoryName, String categoryMemo) {
+        Category category = categoryRePository.findById(Long.parseLong(categoryId))
+                .orElseThrow(()-> new RuntimeException("카테고리를 찾을 수 없습니다."));
 
-    public CategoryDTO updateCategory(String categoryName, String categoryMemo) {
+        category.setName(categoryName);
+        category.setName(categoryMemo);
 
+        categoryRePository.save( category );
+    }
+
+    @Transactional
+    public void deleteCatetory(String categoryId) {
+        Category category = categoryRePository.findById(Long.parseLong(categoryId))
+                .orElseThrow(()-> new RuntimeException("카테고리를 찾을 수 없습니다."));
+
+        try {
+            categoryRePository.delete(category);
+        } catch (Exception e) {
+            throw new RuntimeException("카테고리 데이터 삭제중에 오류가 발생했습니다.");
+        }
     }
 }
