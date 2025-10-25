@@ -3,6 +3,7 @@ package com.example.hello.news.service;
 import com.example.hello.news.dto.ArticleDTO;
 import com.example.hello.news.dto.CountArticleByCategory;
 import com.example.hello.news.dto.NewsResponse;
+import com.example.hello.news.dto.SourceByArticleDTO;
 import com.example.hello.news.entity.Article;
 import com.example.hello.news.entity.Category;
 import com.example.hello.news.entity.Source;
@@ -12,6 +13,7 @@ import com.example.hello.news.repository.SourceRepository;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -113,4 +115,10 @@ public class ArticleService {
         }
     }
 
+    public List<SourceByArticleDTO> getArticleCountBySource() {
+        // JPA : Jakarta Persistance A...
+        // JPQL : JPA 전용 Query Language
+        // 기사가 많은 순서대로 상위 10개만 가져온다
+        return articleRepository.countArticleBySource(PageRequest.of(0,10));
+    }
 }

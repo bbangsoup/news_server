@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Administrator')}">
+</head>
+<body th:replace="~{layout :: base(~{::section})}">
+    <section>
+    <!-- Thymeleaf 템플릿 형태, bootstrap css를 이용하여... -->
+        <h2>Dashboard</h2>
+        <hr>
+        <div>
+            <!-- 기사 수 -->
+            <p th:text="${counts.articles}"></p>
+
+            <!-- 발행처 수 -->
+            <p th:text="${counts.sources}"></p>
+
+            <!-- 카테고리 수 -->
+            <p th:text="${counts.categories}"></p>
+        </div>
+
+    </section>
+</body>
+</html>

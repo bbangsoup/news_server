@@ -2,18 +2,23 @@ package com.example.hello.news.controller;
 
 import com.example.hello.news.dto.CategoryDTO;
 import com.example.hello.news.dto.CountArticleByCategory;
+import com.example.hello.news.dto.SourceByArticleDTO;
 import com.example.hello.news.dto.SourceDTO;
 import com.example.hello.news.entity.Category;
 import com.example.hello.news.service.ArticleService;
 import com.example.hello.news.service.NewsService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.awt.print.Pageable;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.List;
 
 @Controller
@@ -60,8 +65,10 @@ public class AdminController {
         return "redirect:/admin/category";
     }
 
+
+
     @PostMapping("/updateCategory/{id}")
-    public String updateCategory(@RequestParam("id")String categoryId,
+    public String updateCategory(@PathVariable("id")String categoryId,
                                  @RequestParam("name")String categoryName,
                                  @RequestParam("memo")String categoryMemo,
                                  Model model) {
@@ -85,8 +92,9 @@ public class AdminController {
 
     @GetMapping("/source")
     public String getSources(Model model, Pageable pageable){
-        Pageable<SourceDTO> sources = newsService.getSources(pageable);
+        Page<SourceDTO> sources = newsService.getSources(pageable);
         model.addAttribute("sources", sources);
+
         return "source";
     }
 
@@ -108,13 +116,26 @@ public class AdminController {
 
     @GetMapping("/article")
     public String article(Model model) {
+        // 카테고리 목록
         List<CategoryDTO> categories = newsService.getCategories();
+        // 전체 기사 개수
         Long articleCount = articleService.getTotalArticleCount();
+        // 기사가 있는 카테고리 개수
         List<CountArticleByCategory> countByCategories = articleService.countArticleByCategories();
 
+        List<SourceByArticleDTO> sourceByArticles = articleService.getArticleCountBySource();
+        Long top10Sum = sourceByArticles.stream().mapToLong(SourceByArticleDTO::getCount).sum();    // "count : ??" // 상위 10개 기사 개수
+        Long etcCount = articleCount - top10Sum;    // 기타 개수
+
+        // 소스별 기사들의 개수
+        // 상위 10개의 정보들만 별도로 취합하고, 나머지 개수들을 별도로 구함
+
+        // 위에서 구한 데이터들을  템플릿에 전달
         model.addAttribute("articleCount", articleCount);
         model.addAttribute("countsByCategory", countByCategories);
         model.addAttribute("categories", categories);
+        model.addAttribute("sourceByArticles", sourceByArticles);
+        model.addAttribute("etcCount", etcCount);
 
         return "article";
     }
@@ -134,6 +155,16 @@ public class AdminController {
         return "redirect:/admin/article";
     }
 
+    @GetMapping("/dashboard")
+    public String dashboard(Model model){
+        HashMap<String, Long> counts = newsService.getRecordCount();
+        model.addAttribute("counts", counts);
 
+        return "dashboard";
+    }
 
+    @GetMapping("/")
+    public String index(Model model) {
+        return "redirect:/admin/dashboard";
+    }
 }
